@@ -22,7 +22,7 @@ const Login = ({ handleUserLogin }) => {
         // Signed in
         const user = userCredential.user;
         handleUserLogin(user); // Pass the user information to handleUserLogin
-        navigate("/home");
+        navigate("/");
         console.log(user);
       })
       .catch((error) => {
