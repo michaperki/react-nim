@@ -6,7 +6,7 @@ const ShortcutForm = ({ onShortcutSubmit }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const shortcut = { title, description };
+    const shortcut = { title, description, deleted: false };
     onShortcutSubmit(shortcut);
     setTitle('');
     setDescription('');
