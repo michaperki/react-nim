@@ -1,37 +1,33 @@
-import React, { useState, useEffect } from 'react';
-import { signOut } from 'firebase/auth';
-import { auth, database } from '../firebase';
-import { useNavigate } from 'react-router-dom';
-import ShortcutForm from './ShortcutForm';
-import ShortcutList from './ShortcutList';
-import { addShortcutToDatabase } from '../utils/firebaseUtils';
-import { get, ref, onValue } from 'firebase/database';
+// components/Home.js
+import React, { useState, useEffect } from "react";
+import { auth, database } from "../firebase";
+import { useNavigate } from "react-router-dom";
+import ShortcutForm from "./ShortcutForm";
+import ShortcutList from "./ShortcutList";
+import { addShortcutToDatabase } from "../utils/firebaseUtils";
+import { get, ref, onValue } from "firebase/database";
+import { PopularShortcutsContainer, ShortcutCard } from "./styles/HomeStyles"; // Import the styles
+import PopularShortcutsGrid from "./PopularShortcutsGrid"; // Import the new component
+import popularShortcutsData from "../public/popularShortcutsData";
+import SampleComponent from "../SampleComponent";
 
-const Home = ({ isLoggedIn, user, logOutUser }) => {
+const Home = ({ isLoggedIn, user }) => {
   const navigate = useNavigate();
   const [shortcuts, setShortcuts] = useState([]);
-
-  const handleLogout = () => {
-    signOut(auth)
-      .then(() => {
-        // Sign-out successful.
-        navigate('/');
-        console.log('Signed out successfully');
-      })
-      .catch((error) => {
-        // An error happened.
-      });
-  };
 
   const handleShortcutSubmit = (shortcut) => {
     // Add the user information to the shortcut before saving it to the database
     if (user) {
-      const shortcutWithUser = { ...shortcut, userId: user.uid, userEmail: user.email };
+      const shortcutWithUser = {
+        ...shortcut,
+        userId: user.uid,
+        userEmail: user.email,
+      };
       setShortcuts((prevShortcuts) => [...prevShortcuts, shortcutWithUser]);
       // Save the shortcut to the database
       addShortcutToDatabase(shortcut, user.uid, user.email);
     } else {
-      console.error('User not logged in'); // Handle the case when the user is not logged in
+      console.error("User not logged in"); // Handle the case when the user is not logged in
     }
   };
 
@@ -55,20 +51,20 @@ const Home = ({ isLoggedIn, user, logOutUser }) => {
 
   return (
     <>
-      <nav>
-        <p>Welcome Home</p>
-
-        <div>
-          {isLoggedIn ? (
-            <div>
-              <ShortcutForm onShortcutSubmit={handleShortcutSubmit} />
-              <ShortcutList shortcuts={shortcuts} />
-            </div>
-          ) : (
-            <h2>Join Us!</h2>
-          )}
-        </div>
-      </nav>
+      <SampleComponent />
+      <div>
+        {isLoggedIn ? (
+          <div>
+            <ShortcutForm onShortcutSubmit={handleShortcutSubmit} />
+            <ShortcutList shortcuts={shortcuts} />
+          </div>
+        ) : (
+          <PopularShortcutsContainer>
+            <h2>Popular Shortcuts</h2>
+            <PopularShortcutsGrid popularShortcuts={popularShortcutsData} />
+          </PopularShortcutsContainer>
+        )}
+      </div>
     </>
   );
 };
