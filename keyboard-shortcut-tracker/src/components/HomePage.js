@@ -1,28 +1,18 @@
 // components/Home.js
 import React, { useState, useEffect } from 'react';
-import { signOut } from 'firebase/auth';
 import { auth, database } from '../firebase';
 import { useNavigate } from 'react-router-dom';
 import ShortcutForm from './ShortcutForm';
 import ShortcutList from './ShortcutList';
 import { addShortcutToDatabase } from '../utils/firebaseUtils';
 import { get, ref, onValue } from 'firebase/database';
+import { PopularShortcutsContainer, ShortcutCard } from './styles/HomeStyles'; // Import the styles
+import PopularShortcutsGrid from './PopularShortcutsGrid'; // Import the new component
+import popularShortcutsData from '../public/popularShortcutsData';
 
-const Home = ({ isLoggedIn, user, logOutUser }) => {
+const Home = ({ isLoggedIn, user }) => {
   const navigate = useNavigate();
   const [shortcuts, setShortcuts] = useState([]);
-
-  const handleLogout = () => {
-    signOut(auth)
-      .then(() => {
-        // Sign-out successful.
-        navigate('/');
-        console.log('Signed out successfully');
-      })
-      .catch((error) => {
-        // An error happened.
-      });
-  };
 
   const handleShortcutSubmit = (shortcut) => {
     // Add the user information to the shortcut before saving it to the database
@@ -57,17 +47,17 @@ const Home = ({ isLoggedIn, user, logOutUser }) => {
   return (
     <>
       <nav>
-        <p>Welcome Home</p>
-
         <div>
           {isLoggedIn ? (
             <div>
               <ShortcutForm onShortcutSubmit={handleShortcutSubmit} />
-              <button onClick={() => handleLogout()}>Log Out</button>
               <ShortcutList shortcuts={shortcuts} />
             </div>
           ) : (
-            <h2>Join Us!</h2>
+            <PopularShortcutsContainer>
+                <h2>Popular Shortcuts</h2>
+                <PopularShortcutsGrid popularShortcuts={popularShortcutsData}/>
+            </PopularShortcutsContainer>
           )}
         </div>
       </nav>

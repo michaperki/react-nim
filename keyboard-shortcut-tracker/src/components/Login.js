@@ -4,7 +4,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
 import { NavLink, useNavigate } from 'react-router-dom';
 
-const Login = ({ handleLogin }) => {
+const Login = ({ handleUserLogin }) => { // Renamed the parameter to handleUserLogin
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -15,7 +15,7 @@ const Login = ({ handleLogin }) => {
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
-        handleLogin(user); // Pass the user information to handleLogin
+        handleUserLogin(user); // Pass the user information to handleUserLogin
         navigate('/home');
         console.log(user);
       })
