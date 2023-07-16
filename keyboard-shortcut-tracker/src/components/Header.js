@@ -1,33 +1,30 @@
-// components/Header.js
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { HeaderContainer, Nav } from './styles/HeaderStyles';
 
 const Header = ({ isLoggedIn, onLogout }) => {
   return (
-    <HeaderContainer>
-      <Nav>
-        <ul>
+    <nav className="bg-gray-800 text-white p-4 flex justify-between items-center">
+      <Link to="/" className="text-xl font-bold">
+        Shortcut Tracker
+      </Link>
+      {isLoggedIn ? (
+        <button
+          className="bg-red-600 text-white px-4 py-2 rounded-md cursor-pointer"
+          onClick={() => onLogout()}
+        >
+          Log Out
+        </button>
+      ) : (
+        <ul className="flex space-x-4">
           <li>
-            <Link to="/">Home</Link>
+            <Link to="/signup">Signup</Link>
           </li>
-          {!isLoggedIn ? (
-            <>
-              <li>
-                <Link to="/signup">Signup</Link>
-              </li>
-              <li>
-                <Link to="/login">Login</Link>
-              </li>
-            </>
-          ) : (
-            <li>
-              <button onClick={onLogout}>Log Out</button>
-            </li>
-          )}
+          <li>
+            <Link to="/login">Login</Link>
+          </li>
         </ul>
-      </Nav>
-    </HeaderContainer>
+      )}
+    </nav>
   );
 };
 

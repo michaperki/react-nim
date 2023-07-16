@@ -8,6 +8,7 @@ import Header from './components/Header';
 import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase';
 
+
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
@@ -51,20 +52,15 @@ function App() {
   return (
     <Router>
       <div>
-        {/* Pass isLoggedIn, user, and handleLogout props to Header */}
-        <Header isLoggedIn={isLoggedIn} user={user} onLogout={handleLogout} />
+        <Header isLoggedIn={isLoggedIn} onLogout={handleLogout} />
         <section>
           <Routes>
-            {/* Pass isLoggedIn and handleLogin props to Home and Login components */}
-            <Route
-              path="/"
-              element={<Home isLoggedIn={isLoggedIn} user={user} />}
-            />
+            <Route path="/" element={<Home isLoggedIn={isLoggedIn} user={user} />} />
+            {/* Define the route for "/home" */}
+            <Route path="/home" element={<Home isLoggedIn={isLoggedIn} user={user} />} />
             <Route path="/signup" element={<Signup />} />
-            <Route
-              path="/login"
-              element={<Login handleUserLogin={handleLogin} />}
-            />
+            <Route path="/login" element={<Login handleUserLogin={handleLogin} />} />
+            {/* ... Other routes */}
           </Routes>
         </section>
       </div>
