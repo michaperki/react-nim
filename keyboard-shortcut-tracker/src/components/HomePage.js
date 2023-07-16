@@ -1,4 +1,3 @@
-// components/Home.js
 import React, { useState, useEffect } from "react";
 import { auth, database } from "../firebase";
 import { useNavigate } from "react-router-dom";
@@ -9,7 +8,6 @@ import { get, ref, onValue } from "firebase/database";
 import { PopularShortcutsContainer, ShortcutCard } from "./styles/HomeStyles"; // Import the styles
 import PopularShortcutsGrid from "./PopularShortcutsGrid"; // Import the new component
 import popularShortcutsData from "../public/popularShortcutsData";
-import SampleComponent from "../SampleComponent";
 
 const Home = ({ isLoggedIn, user }) => {
   const navigate = useNavigate();
@@ -51,7 +49,6 @@ const Home = ({ isLoggedIn, user }) => {
 
   return (
     <>
-      <SampleComponent />
       <div>
         {isLoggedIn ? (
           <div>
@@ -59,10 +56,25 @@ const Home = ({ isLoggedIn, user }) => {
             <ShortcutList shortcuts={shortcuts} />
           </div>
         ) : (
-          <PopularShortcutsContainer>
-            <h2>Popular Shortcuts</h2>
-            <PopularShortcutsGrid popularShortcuts={popularShortcutsData} />
-          </PopularShortcutsContainer>
+          <div className="py-4 px-6 bg-gray-200">
+            <h2 className="text-xl font-semibold mb-4">Popular Shortcuts</h2>
+            <div className="grid grid-cols-2 gap-4">
+              {popularShortcutsData.map((shortcut, index) => (
+                <div key={index} className="bg-white rounded-lg shadow-md p-4 hover:scale-105 transition-transform cursor-pointer">
+                  <div className="text-gray-700 font-medium mb-2">{shortcut.title}</div>
+                  <div className="flex items-center space-x-2">
+                    {shortcut.keys.map((key, keyIndex) => (
+                      <div key={keyIndex} className="rounded-md border border-gray-300 p-1 text-sm w-10 text-center">{key}</div>
+                    ))}
+                  </div>
+                  <div className="flex items-center mt-2">
+                    <img src={shortcut.logo} alt="App Logo" className="w-6 h-6 mr-2" />
+                    <span className="text-gray-600 text-sm">{shortcut.application}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         )}
       </div>
     </>

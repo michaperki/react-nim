@@ -1,6 +1,4 @@
-// components/ShortcutForm.js
 import React, { useState } from 'react';
-import { FormContainer } from './styles/FormStyles'; // Import the styles
 
 const ShortcutForm = ({ onShortcutSubmit }) => {
   const [title, setTitle] = useState('');
@@ -15,35 +13,39 @@ const ShortcutForm = ({ onShortcutSubmit }) => {
   };
 
   return (
-    <FormContainer>
-      <section>
-        <div>
-          <form onSubmit={handleSubmit}>
-            <div>
-              <label htmlFor="title">Title:</label>
-              <input
-                type="text"
-                id="title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="description">Description:</label>
-              <input
-                type="text"
-                id="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                required
-              />
-            </div>
-            <button type="submit">Add Shortcut</button>
-          </form>
+    <div className="bg-white p-6 shadow-md rounded-md">
+      <form onSubmit={handleSubmit}>
+        <div className="mb-4">
+          <label htmlFor="title" className="block text-gray-700 font-medium">
+            Title:
+          </label>
+          <input
+            type="text"
+            id="title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+            className="w-full border rounded-md px-3 py-2 mt-1"
+          />
         </div>
-      </section>
-    </FormContainer>
+        <div className="mb-4">
+          <label htmlFor="description" className="block text-gray-700 font-medium">
+            Shortcut:
+          </label>
+          <input
+            type="text"
+            id="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
+            className="w-full border rounded-md px-3 py-2 mt-1"
+          />
+        </div>
+        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded-md cursor-pointer">
+          Add Shortcut
+        </button>
+      </form>
+    </div>
   );
 };
 
