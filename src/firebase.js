@@ -2,7 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from 'firebase/firestore';
-import { getDatabase, ref, set } from "firebase/database";
+import { getDatabase, ref, set, push } from "firebase/database";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -19,15 +19,30 @@ const firebaseConfig = {
   databaseURL: "https://keyboardshortcuts-b88ba-default-rtdb.firebaseio.com/"
 };
 
-
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-
-// Initialize Firebase Authentication and get a reference to the service
 const auth = getAuth(app);
-
 const database = getDatabase(app);
 
-export { auth, database, ref, set };
+const addShortcutToDatabase = (shortcut, userId, userEmail) => {
+  const newShortcutRef = ref(database, `users/${userId}/shortcuts`);
+  const newShortcutData = {
+    ...shortcut,
+    userId,
+    userEmail,
+    deleted: false,
+  };
 
-export default app;
+  const newShortcutKey = push(newShortcutRef).key;
+  const newShortcutWithKey = { ...newShortcutData, key: newShortcutKey };
+
+  return set(newShortcutRef.child(newShortcutKey), newShortcutWithKey).then(() => newShortcutWithKey);
+};
+
+const updateShortcutInDatabase = (shortcutKey, updates) => {
+  const databaseRef = ref(database, `users/${updates.userId}/shortcuts/${shortcutKey}`);
+  return set(databaseRef, updates, { merge: true });
+};
+
+
+export { auth, database, ref, set, addShortcutToDatabase, updateShortcutInDatabase };
