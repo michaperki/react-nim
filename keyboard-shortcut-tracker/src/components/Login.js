@@ -1,21 +1,28 @@
-import React, { useState } from 'react';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../firebase';
-import { NavLink, useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase";
+import { NavLink, useNavigate } from "react-router-dom";
 
 const Login = ({ handleUserLogin }) => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const onLogin = (e) => {
     e.preventDefault();
+
+    // Simple email format validation
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      console.error("Invalid email format");
+      return;
+    }
+
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
-        handleUserLogin(user);
-        navigate('/home');
+        handleUserLogin(user); // Pass the user information to handleUserLogin
+        navigate("/home");
         console.log(user);
       })
       .catch((error) => {
@@ -33,7 +40,10 @@ const Login = ({ handleUserLogin }) => {
 
           <form onSubmit={onLogin}>
             <div className="mb-4">
-              <label htmlFor="email-address" className="block text-gray-700 font-medium">
+              <label
+                htmlFor="email-address"
+                className="block text-gray-700 font-medium"
+              >
                 Email address
               </label>
               <input
@@ -48,7 +58,10 @@ const Login = ({ handleUserLogin }) => {
             </div>
 
             <div className="mb-4">
-              <label htmlFor="password" className="block text-gray-700 font-medium">
+              <label
+                htmlFor="password"
+                className="block text-gray-700 font-medium"
+              >
                 Password
               </label>
               <input
@@ -73,7 +86,10 @@ const Login = ({ handleUserLogin }) => {
           </form>
 
           <p className="text-sm text-gray-700 text-center">
-            No account yet? <NavLink to="/signup" className="text-blue-600">Sign up</NavLink>
+            No account yet?{" "}
+            <NavLink to="/signup" className="text-blue-600">
+              Sign up
+            </NavLink>
           </p>
         </div>
       </section>

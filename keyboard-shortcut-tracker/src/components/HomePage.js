@@ -27,9 +27,7 @@ const Home = ({ isLoggedIn, user }) => {
       const newShortcutRef = push(databaseRef);
       set(newShortcutRef, shortcutWithUser)
         .then(() => {
-          // Add the generated key to the shortcut object
-          const newShortcut = { ...shortcutWithUser, key: newShortcutRef.key };
-          setShortcuts((prevShortcuts) => [...prevShortcuts, newShortcut]);
+          // No need to update the state here; the onValue listener will handle it
         })
         .catch((error) => {
           console.error("Error saving shortcut:", error);
@@ -38,46 +36,39 @@ const Home = ({ isLoggedIn, user }) => {
       console.error("User not logged in"); // Handle the case when the user is not logged in
     }
   };
+
   const handleDeleteShortcut = (shortcutToDelete) => {
     // Mark the shortcut as deleted in the database
-    if (user && shortcutToDelete.key) {
-      const databaseRef = ref(database, `users/${user.uid}/shortcuts/${shortcutToDelete.key}`);
+    if (user) {
+      const databaseRef = ref(
+        database,
+        `users/${user.uid}/shortcuts/${shortcutToDelete.key}`
+      );
       set(databaseRef, { deleted: true }, { merge: true })
         .then(() => {
           // Shortcut marked as deleted successfully
-          // Remove the deleted shortcut from the state
-          setShortcuts((prevShortcuts) =>
-            prevShortcuts.filter((shortcut) => shortcut.key !== shortcutToDelete.key)
-          );
         })
         .catch((error) => {
-          console.error('Error marking shortcut as deleted:', error);
+          console.error("Error marking shortcut as deleted:", error);
         });
     }
   };
 
-  // Fetch existing shortcuts when the user logs in
+  // Fetch existing shortcuts when the user logs in, but only run once
   useEffect(() => {
     if (user) {
       const databaseRef = ref(database, `users/${user.uid}/shortcuts`);
       const unsubscribe = onValue(databaseRef, (snapshot) => {
         const shortcutsData = snapshot.val();
         if (shortcutsData) {
-          // Get the existing shortcuts from the database
-          const shortcutsArray = Object.values(shortcutsData);
-
-          // Filter out deleted shortcuts and those that already exist in the state
-          const filteredShortcuts = shortcutsArray.filter(
-            (shortcut) =>
-              !shortcut.deleted &&
-              !shortcuts.some((s) => s.key === shortcut.key)
+          // Filter out deleted shortcuts before setting the state
+          const shortcutsArray = Object.entries(shortcutsData).map(
+            ([key, value]) => ({ key, ...value })
           );
-
-          // Update the state with the new shortcuts
-          setShortcuts((prevShortcuts) => [
-            ...prevShortcuts,
-            ...filteredShortcuts,
-          ]);
+          const filteredShortcuts = shortcutsArray.filter(
+            (shortcut) => !shortcut.deleted
+          );
+          setShortcuts(filteredShortcuts);
         } else {
           setShortcuts([]); // If no shortcuts found, set shortcuts to an empty array
         }
