@@ -1,21 +1,22 @@
-import React, { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
-import { NavLink, useNavigate } from "react-router-dom";
+// components/Login.js
+import React, { useState } from 'react';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebase';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 const Login = ({ handleLogin }) => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const onLogin = (e) => {
-    handleLogin();
     e.preventDefault();
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
-        navigate("/home");
+        handleLogin(user); // Pass the user information to handleLogin
+        navigate('/home');
         console.log(user);
       })
       .catch((error) => {
@@ -32,7 +33,7 @@ const Login = ({ handleLogin }) => {
           <div>
             <p> FocusApp </p>
 
-            <form>
+            <form onSubmit={onLogin}>
               <div>
                 <label htmlFor="email-address">Email address</label>
                 <input
@@ -58,7 +59,7 @@ const Login = ({ handleLogin }) => {
               </div>
 
               <div>
-                <button onClick={onLogin}>Login</button>
+                <button type="submit">Login</button> {/* Change to type="submit" */}
               </div>
             </form>
 

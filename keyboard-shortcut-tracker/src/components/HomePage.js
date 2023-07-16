@@ -1,12 +1,13 @@
+// components/Home.js
 import React, { useState } from 'react';
-import { signOut } from "firebase/auth";
-import { auth } from "../firebase";
-import { useNavigate } from "react-router-dom";
-import ShortcutForm from "./ShortcutForm";
-import ShortcutList from "./ShortcutList";
-import { addShortcutToDatabase } from "../utils/firebaseUtils";
+import { signOut } from 'firebase/auth';
+import { auth } from '../firebase';
+import { useNavigate } from 'react-router-dom';
+import ShortcutForm from './ShortcutForm';
+import ShortcutList from './ShortcutList';
+import { addShortcutToDatabase } from '../utils/firebaseUtils';
 
-const Home = ({ isLoggedIn, logOutUser }) => {
+const Home = ({ isLoggedIn, user, logOutUser }) => {
   const navigate = useNavigate();
   const [shortcuts, setShortcuts] = useState([]);
 
@@ -14,8 +15,8 @@ const Home = ({ isLoggedIn, logOutUser }) => {
     signOut(auth)
       .then(() => {
         // Sign-out successful.
-        navigate("/");
-        console.log("Signed out successfully");
+        navigate('/');
+        console.log('Signed out successfully');
       })
       .catch((error) => {
         // An error happened.
@@ -24,10 +25,15 @@ const Home = ({ isLoggedIn, logOutUser }) => {
   };
 
   const handleShortcutSubmit = (shortcut) => {
-    setShortcuts((prevShortcuts) => [...prevShortcuts, shortcut]);
-    // Save the shortcut to the database using the appropriate method (e.g., Firebase Firestore, Axios to a server, etc.)
-    // Example: You can use addShortcutToDatabase(shortcut) here (refer to previous code)
-    addShortcutToDatabase(shortcut);
+    // Add the user information to the shortcut before saving it to the database
+    if (user) {
+      const shortcutWithUser = { ...shortcut, userId: user.uid, userEmail: user.email };
+      setShortcuts((prevShortcuts) => [...prevShortcuts, shortcutWithUser]);
+      // Save the shortcut to the database
+      addShortcutToDatabase(shortcut, user.uid, user.email);
+    } else {
+      console.error('User not logged in'); // Handle the case when the user is not logged in
+    }
   };
 
   return (
@@ -40,7 +46,7 @@ const Home = ({ isLoggedIn, logOutUser }) => {
             <div>
               <ShortcutForm onShortcutSubmit={handleShortcutSubmit} />
               <button onClick={() => handleLogout()}>Log Out</button>
-                <ShortcutList shortcuts={shortcuts} />
+              <ShortcutList shortcuts={shortcuts} />
             </div>
           ) : (
             <h2>Join Us!</h2>
