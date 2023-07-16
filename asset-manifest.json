@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/KeyboardShortcutTracker/static/css/main.52404f2a.css",
-    "main.js": "/KeyboardShortcutTracker/static/js/main.9c31a707.js",
+    "main.css": "/KeyboardShortcutTracker/static/css/main.e2f0587d.css",
+    "main.js": "/KeyboardShortcutTracker/static/js/main.3a577a6f.js",
     "index.html": "/KeyboardShortcutTracker/index.html",
-    "main.52404f2a.css.map": "/KeyboardShortcutTracker/static/css/main.52404f2a.css.map",
-    "main.9c31a707.js.map": "/KeyboardShortcutTracker/static/js/main.9c31a707.js.map"
+    "main.e2f0587d.css.map": "/KeyboardShortcutTracker/static/css/main.e2f0587d.css.map",
+    "main.3a577a6f.js.map": "/KeyboardShortcutTracker/static/js/main.3a577a6f.js.map"
   },
   "entrypoints": [
-    "static/css/main.52404f2a.css",
-    "static/js/main.9c31a707.js"
+    "static/css/main.e2f0587d.css",
+    "static/js/main.3a577a6f.js"
   ]
 }
