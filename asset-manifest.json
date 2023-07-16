@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/keyboard-shortcut-tracker/static/css/main.5052c20a.css",
+    "main.js": "/keyboard-shortcut-tracker/static/js/main.ed3d224a.js",
+    "index.html": "/keyboard-shortcut-tracker/index.html",
+    "main.5052c20a.css.map": "/keyboard-shortcut-tracker/static/css/main.5052c20a.css.map",
+    "main.ed3d224a.js.map": "/keyboard-shortcut-tracker/static/js/main.ed3d224a.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.5052c20a.css",
+    "static/js/main.ed3d224a.js"
+  ]
+}
