@@ -22,6 +22,7 @@ const NimGame = () => {
     isCurrentPlayer,
     winner,
     showNewGamePopup,
+    handleClosePopup,
   } = useNimGameLogic(gameId);
 
   return (
@@ -54,7 +55,7 @@ const NimGame = () => {
           </button>
         )}
       </div>
-      {showNewGamePopup && <NewGamePopup winner={winner} />}
+      {showNewGamePopup && <NewGamePopup winner={winner} onClose={handleClosePopup} />}
     </div>
   );
 };

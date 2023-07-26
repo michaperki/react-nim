@@ -82,6 +82,10 @@ export function useNimGameLogic(gameId) {
     return highlightedSticks;
   };
 
+  const handleClosePopup = () => {
+    setShowNewGamePopup(false);
+  };
+
   return {
     gameData,
     currentPlayer,
@@ -94,6 +98,7 @@ export function useNimGameLogic(gameId) {
     isCurrentPlayer,
     winner,
     showNewGamePopup,
+    handleClosePopup,
     updateGameData
   };
 }
