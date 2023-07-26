@@ -1,3 +1,4 @@
+// Home.js
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useGameManagement } from "../../hooks/useGameManagement";
@@ -11,9 +12,8 @@ const GameListHeader = ({ text }) => {
 
 const Home = ({ isLoggedIn, user }) => {
   const navigate = useNavigate();
-  const { activeGames, waitingGames, createGame, joinGame } = useGameManagement(
-    user
-  );
+  const { activeGames, waitingGames, createGame, joinGame } =
+    useGameManagement(user);
 
   const renderGameComponents = () => {
     if (!isLoggedIn) {
@@ -21,19 +21,27 @@ const Home = ({ isLoggedIn, user }) => {
     }
 
     return (
-      <>
-        <div className="flex justify-center">
+      <div className="max-w-md mx-auto">
+        <div className="my-8">
           <GameButton onClick={createGame} label="Create Game" />
         </div>
-        <GameListHeader text="Active Games:" />
-        <GameList games={activeGames} />
-        <GameListHeader text="Waiting Games:" />
-        <GameList games={waitingGames} joinGame={joinGame} />
-      </>
+        <div className="mt-8">
+          <GameListHeader text="Waiting Games:" />
+          <GameList games={waitingGames} joinGame={joinGame} />
+        </div>
+        <div>
+          <GameListHeader text="Active Games:" />
+          <GameList games={activeGames} />
+        </div>
+      </div>
     );
   };
 
-  return <div>{renderGameComponents()}</div>;
+  return (
+    <div className="min-h-screen bg-gray-100 py-8">
+      <div className="max-w-4xl mx-auto px-4">{renderGameComponents()}</div>
+    </div>
+  );
 };
 
 export default Home;
