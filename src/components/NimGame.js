@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ref, get, set, onValue } from "firebase/database";
 import { auth, database } from "../firebase";
+import NimPile from "./NimPile";
+import GameStatus from "./GameStatus";
 
 const NimGame = () => {
   const { gameId } = useParams();
@@ -54,7 +56,7 @@ const NimGame = () => {
       });
 
       setSelectedPile(null);
-      setSelectedSticks(null);
+      setSelectedSticks([]);
       setCurrentPlayer(currentPlayer === "player_1" ? "player_2" : "player_1");
     }
   };
@@ -69,24 +71,24 @@ const NimGame = () => {
 
   const getWinner = () => {
     if (gameData && checkGameStatus()) {
-      return gameData.currentPlayer === 1 ? 2 : 1;
+      return gameData.currentPlayer === "player_1" ? 2 : 1;
     }
     return null;
   };
 
   const getHighlightedSticks = () => {
-    if (selectedPile === null || selectedSticks === null) {
+    if (selectedPile === null || selectedSticks.length === 0) {
       return [];
     }
   
     const highlightedSticks = [];
     for (let i = 0; i < selectedSticks; i++) {
-      const stickNumber = selectedPile * 5 + i;
-      highlightedSticks.push(stickNumber);
+      highlightedSticks.push(i + 1);
     }
-  
+ 
     return highlightedSticks;
   };
+  
 
   return (
     <div className="min-h-screen bg-gray-100 py-8">
@@ -99,52 +101,30 @@ const NimGame = () => {
         )}
         {gameData && (
           <div>
-            {/* ... (rest of the game information display) */}
             <div className="mt-4">
               <h3 className="font-bold mb-2">Piles:</h3>
               {gameData.piles.map((pile, pileIndex) => (
-                <div
+                <NimPile
                   key={pileIndex}
-                  className="mb-4 flex items-center justify-center"
-                >
-                  {Array(pile)
-                    .fill()
-                    .map((_, sticksIndex) => {
-                      const stickNumber = pileIndex * 5 + sticksIndex;
-                      const isHighlighted =
-                        getHighlightedSticks().includes(stickNumber);
-                      return (
-                        <button
-                          key={stickNumber}
-                          onClick={() =>
-                            handleSticksClick(pileIndex, sticksIndex + 1)
-                          }
-                          className={`${
-                            isHighlighted
-                              ? "bg-blue-500 text-white"
-                              : "bg-gray-300 text-gray-700"
-                          } py-2 px-4 rounded-lg mr-2`}
-                        >
-                          {sticksIndex + 1}
-                        </button>
-                      );
-                    })}
-                </div>
+                  pileIndex={pileIndex}
+                  pileSize={pile}
+                  selectedPile={selectedPile}
+                  selectedSticks={selectedSticks}
+                  handleSticksClick={handleSticksClick}
+                  isCurrentPlayer={isCurrentPlayer}
+                  getHighlightedSticks={getHighlightedSticks}
+                />
               ))}
             </div>
-            {checkGameStatus() && (
-              <div className="mt-4">
-                <h3 className="font-bold">Game Over!</h3>
-                {getWinner() ? (
-                  <p className="mt-2">Player {getWinner()} wins!</p>
-                ) : (
-                  <p className="mt-2">It's a draw!</p>
-                )}
-              </div>
-            )}
+            {checkGameStatus() && <GameStatus winner={getWinner()} />}
             {!checkGameStatus() && (
               <button
                 onClick={handlePlay}
+                disabled={
+                  selectedPile === null ||
+                  selectedSticks.length === 0 ||
+                  !isCurrentPlayer()
+                }
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg mt-4"
               >
                 Play
