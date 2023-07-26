@@ -1,0 +1,20 @@
+/* NimStick.css */
+.nim-stick {
+    width: 20px;
+    height: 80px;
+    background-color: #704214;
+    border: 1px solid #5a3a14;
+    border-radius: 5px;
+    margin-right: 5px;
+    transition: background-color 0.2s;
+  }
+  
+  .nim-stick.highlighted {
+    background-color: #0a79d6;
+  }
+  
+  .nim-stick.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
