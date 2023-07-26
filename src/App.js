@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Home from "./components/HomePage";
+import Home from "./components/Home";
 import Signup from "./components/Signup";
 import Login from "./components/Login";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";

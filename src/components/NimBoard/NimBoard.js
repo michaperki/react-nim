@@ -1,22 +1,35 @@
-// NimBoard.js
-
+// NimGameBoard.js
 import React from "react";
-import { useParams } from "react-router-dom";
+import NimPile from "../NimPile";
+import GameHeader from "../GameHeader";
 
-const NimBoard = () => {
-  const { gameId } = useParams();
-
+const NimBoard = ({
+  gameData,
+  selectedPile,
+  selectedSticks,
+  handleSticksClick,
+  isCurrentPlayer,
+  getHighlightedSticks,
+}) => {
   return (
-    <main className="flex justify-center h-screen">
-      <section>
-        <div className="bg-white p-6 shadow-md rounded-md">
-          <h1 className="text-2xl font-semibold mb-4">Nim Game</h1>
-          <div className="mb-4">
-            <p className="block text-gray-700 font-medium">Game ID: {gameId}</p>
-          </div>
-        </div>
-      </section>
-    </main>
+    <div>
+      <GameHeader player1={gameData.player_1_email} player2={gameData.player_2_email} />
+      <div className="mt-4">
+        <h3 className="font-bold mb-2">Piles:</h3>
+        {gameData.piles.map((pile, pileIndex) => (
+          <NimPile
+            key={pileIndex}
+            pileIndex={pileIndex}
+            pileSize={pile}
+            selectedPile={selectedPile}
+            selectedSticks={selectedSticks}
+            handleSticksClick={handleSticksClick}
+            isCurrentPlayer={isCurrentPlayer}
+            getHighlightedSticks={getHighlightedSticks}
+          />
+        ))}
+      </div>
+    </div>
   );
 };
 
