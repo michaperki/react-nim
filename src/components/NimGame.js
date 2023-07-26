@@ -6,26 +6,23 @@ import NimPile from "./NimPile";
 import GameStatus from "./GameStatus";
 import GameHeader from "./GameHeader";
 import NewGamePopup from "./NewGamePopup";
+import { useGame } from "../hooks/firebase";
 
 const NimGame = () => {
   const { gameId } = useParams();
-  const [gameData, setGameData] = useState(null);
-  const [currentPlayer, setCurrentPlayer] = useState(null);
   const [selectedPile, setSelectedPile] = useState(null);
   const [selectedSticks, setSelectedSticks] = useState([]);
-  const [gameOver, setGameOver] = useState(false);
   const [showNewGamePopup, setShowNewGamePopup] = useState(false);
+  const [winner, setWinner] = useState(null);
+  const { gameData, currentPlayer, updateGameData } = useGame(gameId);
 
   useEffect(() => {
-    const gameRef = ref(database, `games/${gameId}`);
-    const unsubscribe = onValue(gameRef, (snapshot) => {
-      const gameData = snapshot.val();
-      setGameData(gameData);
-      setCurrentPlayer(gameData.currentPlayer);
-    });
-
-    return () => unsubscribe();
-  }, [gameId]);
+    if (checkGameStatus()) {
+      setShowNewGamePopup(true);
+      const winner = gameData.currentPlayer === "player_1" ? 2 : 1;
+      setWinner(winner);
+    }
+  }, [gameData, currentPlayer]);
 
   const handleSticksClick = (pileIndex, sticksCount) => {
     setSelectedPile(pileIndex);
@@ -49,25 +46,17 @@ const NimGame = () => {
       return;
     }
     if (selectedPile !== null && selectedSticks !== null) {
-      const gameRef = ref(database, `games/${gameId}`);
-      get(gameRef).then((snapshot) => {
-        const gameData = snapshot.val();
-        const piles = [...gameData.piles];
-        piles[selectedPile] -= selectedSticks;
-        const currentPlayer =
-          gameData.currentPlayer === "player_1" ? "player_2" : "player_1";
-        set(gameRef, { ...gameData, piles, currentPlayer });
-
-        // Check if the game is over and set gameOver accordingly
-        const totalSticks = piles.reduce((a, b) => a + b, 0);
-        if (totalSticks === 1) {
-          setGameOver(true);
-        }
-      });
-
+      const newPileSize = gameData.piles[selectedPile] - selectedSticks;
+      const newPiles = [...gameData.piles];
+      newPiles[selectedPile] = newPileSize;
+      const updatedData = {
+        ...gameData,
+        piles: newPiles,
+        currentPlayer: currentPlayer === "player_1" ? "player_2" : "player_1",
+      };
+      updateGameData(updatedData);
       setSelectedPile(null);
       setSelectedSticks([]);
-      setCurrentPlayer(currentPlayer === "player_1" ? "player_2" : "player_1");
     }
   };
 
@@ -97,40 +86,6 @@ const NimGame = () => {
     }
 
     return highlightedSticks;
-  };
-
-  useEffect(() => {
-    if (gameOver) {
-      console.log("Game Over!");
-      setShowNewGamePopup(true);
-    }
-  }, [gameOver]);
-
-  const handleNewGame = () => {
-    // Initialize new game data (modify as needed)
-    const newGameData = {
-      player_1_ID: auth.currentUser.uid,
-      player_1_email: auth.currentUser.email,
-      player_2_ID: null,
-      player_2_email: null,
-      status: "waiting",
-      deleted: false,
-      piles: [1, 3, 5, 7], // Starting pile sizes for the new game
-      currentPlayer: "player_1", // Set the starting player for the new game
-    };
-
-    const gameRef = ref(database, `games/${gameId}`);
-    set(gameRef, newGameData).then(() => {
-      // Reset the state to start the new game
-      setGameData(newGameData);
-      setCurrentPlayer("player_1");
-      setGameOver(false);
-      setShowNewGamePopup(false);
-    });
-  };
-
-  const handleCancelNewGame = () => {
-    setShowNewGamePopup(false);
   };
 
   return (
@@ -179,12 +134,7 @@ const NimGame = () => {
             )}
           </div>
         )}
-        {showNewGamePopup && (
-          <NewGamePopup
-            onRequestNewGame={handleNewGame}
-            onCancel={handleCancelNewGame}
-          />
-        )}
+        {showNewGamePopup && <NewGamePopup winner={winner} />}
       </div>
     </div>
   );
