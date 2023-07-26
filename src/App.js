@@ -64,7 +64,7 @@ function App() {
   }, []);
 
   return (
-    <Router>
+    <Router basename="/react-nim">
       <div>
         <Header isLoggedIn={isLoggedIn} onLogout={handleLogout} />
         <section>

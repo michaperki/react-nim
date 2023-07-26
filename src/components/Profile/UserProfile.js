@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Avatar from "./Avatar";
+import Avatar from "../Avatar";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { firestore } from "../../firebase";
 import { useAuth } from "../../contexts/AuthContext";
