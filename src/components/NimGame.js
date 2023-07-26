@@ -82,27 +82,23 @@ const NimGame = () => {
             <div className="mt-4">
               <h3 className="font-bold mb-2">Piles:</h3>
               {gameData.piles.map((pile, pileIndex) => (
-                <div key={pileIndex} className="mb-4">
-                  <div className="flex items-center">
-                    {Array(pile)
-                      .fill()
-                      .map((_, sticksIndex) => (
-                        <button
-                          key={sticksIndex}
-                          onClick={() =>
-                            handleSticksClick(pileIndex, sticksIndex + 1)
-                          }
-                          className={`${
-                            selectedPile === pileIndex &&
-                            selectedSticks === sticksIndex + 1
-                              ? "bg-blue-500 text-white"
-                              : "bg-gray-300 text-gray-700"
-                          } py-2 px-4 rounded-lg mr-2`}
-                        >
-                          {sticksIndex + 1}
-                        </button>
-                      ))}
-                  </div>
+                <div key={pileIndex} className="mb-4 flex items-center justify-center">
+                  {Array(pile)
+                    .fill()
+                    .map((_, sticksIndex) => (
+                      <button
+                        key={sticksIndex}
+                        onClick={() => handleSticksClick(pileIndex, sticksIndex + 1)}
+                        className={`${
+                          selectedPile === pileIndex &&
+                          selectedSticks === sticksIndex + 1
+                            ? "bg-blue-500 text-white"
+                            : "bg-gray-300 text-gray-700"
+                        } py-2 px-4 rounded-lg mr-2`}
+                      >
+                        {sticksIndex + 1}
+                      </button>
+                    ))}
                 </div>
               ))}
             </div>
