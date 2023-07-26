@@ -28,7 +28,7 @@ const NimGame = () => {
 
   const isCurrentPlayer = () => {
     if (gameData) {
-      if (currentPlayer === 1) {
+      if (currentPlayer === "player_1") {
         return gameData.player_1_ID === auth.currentUser.uid;
       }
       return gameData.player_2_ID === auth.currentUser.uid;
@@ -55,14 +55,16 @@ const NimGame = () => {
 
       setSelectedPile(null);
       setSelectedSticks(null);
+      setCurrentPlayer(currentPlayer === "player_1" ? "player_2" : "player_1");
     }
   };
+
   const checkGameStatus = () => {
+    // game is over when there is exactly one stick left
     if (gameData) {
-      const isGameOver = gameData.piles.every((pile) => pile === 0);
-      return isGameOver;
+      const totalSticks = gameData.piles.reduce((a, b) => a + b, 0);
+      return totalSticks === 1;
     }
-    return false;
   };
 
   const getWinner = () => {
@@ -72,33 +74,61 @@ const NimGame = () => {
     return null;
   };
 
+  const getHighlightedSticks = () => {
+    if (selectedPile === null || selectedSticks === null) {
+      return [];
+    }
+  
+    const highlightedSticks = [];
+    for (let i = 0; i < selectedSticks; i++) {
+      const stickNumber = selectedPile * 5 + i;
+      highlightedSticks.push(stickNumber);
+    }
+  
+    return highlightedSticks;
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 py-8">
       <div className="max-w-md mx-auto px-4">
         <h1 className="text-4xl font-bold mb-4">Nim Game</h1>
+        {currentPlayer && (
+          <h2 className="text-2xl font-semibold mb-4">
+            Current Player: Player {currentPlayer === "player_1" ? 1 : 2}
+          </h2>
+        )}
         {gameData && (
           <div>
             {/* ... (rest of the game information display) */}
             <div className="mt-4">
               <h3 className="font-bold mb-2">Piles:</h3>
               {gameData.piles.map((pile, pileIndex) => (
-                <div key={pileIndex} className="mb-4 flex items-center justify-center">
+                <div
+                  key={pileIndex}
+                  className="mb-4 flex items-center justify-center"
+                >
                   {Array(pile)
                     .fill()
-                    .map((_, sticksIndex) => (
-                      <button
-                        key={sticksIndex}
-                        onClick={() => handleSticksClick(pileIndex, sticksIndex + 1)}
-                        className={`${
-                          selectedPile === pileIndex &&
-                          selectedSticks === sticksIndex + 1
-                            ? "bg-blue-500 text-white"
-                            : "bg-gray-300 text-gray-700"
-                        } py-2 px-4 rounded-lg mr-2`}
-                      >
-                        {sticksIndex + 1}
-                      </button>
-                    ))}
+                    .map((_, sticksIndex) => {
+                      const stickNumber = pileIndex * 5 + sticksIndex;
+                      const isHighlighted =
+                        getHighlightedSticks().includes(stickNumber);
+                      return (
+                        <button
+                          key={stickNumber}
+                          onClick={() =>
+                            handleSticksClick(pileIndex, sticksIndex + 1)
+                          }
+                          className={`${
+                            isHighlighted
+                              ? "bg-blue-500 text-white"
+                              : "bg-gray-300 text-gray-700"
+                          } py-2 px-4 rounded-lg mr-2`}
+                        >
+                          {sticksIndex + 1}
+                        </button>
+                      );
+                    })}
                 </div>
               ))}
             </div>
