@@ -13,7 +13,7 @@ const Header = ({ isLoggedIn, onLogout }) => {
     <header className="py-4 px-6 bg-gray-900 text-white">
       <div className="flex justify-between items-center">
         <Link to="/" className="flex items-center space-x-2">
-          <h1 className="text-xl font-semibold">KeyboardShortcutTracker</h1>
+          <h1 className="text-xl font-semibold">Nim</h1>
         </Link>
         {/* Mobile Menu */}
         <div className="md:hidden">
@@ -63,7 +63,7 @@ const Header = ({ isLoggedIn, onLogout }) => {
             <>
               <Link
                 to="/login"
-                className="text-white hover:text-gray-200 transition-colors"
+                className="bg-white text-gray-900 px-4 py-2 rounded-md hover:bg-gray-100 transition-colors"
               >
                 Login
               </Link>

@@ -1,103 +1,109 @@
 import React, { useState, useEffect } from "react";
 import { auth, database, set } from "../firebase";
 import { useNavigate } from "react-router-dom";
-import ShortcutForm from "./ShortcutForm";
-import ShortcutList from "./ShortcutList";
-import { addShortcutToDatabase } from "../utils/firebaseUtils";
 import { get, ref, onValue, push } from "firebase/database";
-import PopularShortcutsGrid from "./PopularShortcutsGrid"; // Import the new component
-import popularShortcutsData from "../public/popularShortcutsData";
+import LandingPage from "./LandingPage";
+import ActiveGames from "./ActiveGames";
+import WaitingGames from "./WaitingGames";
 
 const Home = ({ isLoggedIn, user }) => {
   const navigate = useNavigate();
-  const [shortcuts, setShortcuts] = useState([]);
+  const [activeGames, setActiveGames] = useState([]);
+  const [waitingGames, setWaitingGames] = useState([]);
 
-  const handleShortcutSubmit = (shortcut) => {
-    // Add the user information to the shortcut before saving it to the database
-    if (user) {
-      const shortcutWithUser = {
-        ...shortcut,
-        userId: user.uid,
-        userEmail: user.email,
-        deleted: false, // Set the initial value of 'deleted' to false
+  const createGame = () => {
+    if (!user) {
+      // Ensure user exists before proceeding
+      return;
+    }
+
+    const newGameRef = ref(database, "games");
+    const newGameData = {
+      player_1_ID: user.uid,
+      player_1_email: user.email,
+      player_2_ID: null,
+      player_2_email: null,
+      status: "waiting",
+      deleted: false,
+      piles: [1, 3, 5, 7],
+    };
+
+    const newGameRefWithKey = push(newGameRef);
+    const newGameKey = newGameRefWithKey.key;
+    const newGameWithKey = { ...newGameData, key: newGameKey };
+
+    return set(newGameRefWithKey, newGameWithKey).then(() => {
+      navigate(`/game/${newGameKey}`);
+    });
+  };
+
+  const joinGame = (gameId) => {
+    if (!user) {
+      // Ensure user exists before proceeding
+      return;
+    }
+
+    const gameRef = ref(database, `games/${gameId}`);
+    get(gameRef).then((snapshot) => {
+      const game = snapshot.val();
+      const gameData = {
+        ...game,
+        player_2_ID: user.uid,
+        player_2_email: user.email,
+        status: "playing",
+        currentPlayer: 1,
       };
-
-      // Save the shortcut to the database using push to generate a unique key
-      const databaseRef = ref(database, `users/${user.uid}/shortcuts`);
-      const newShortcutRef = push(databaseRef);
-      set(newShortcutRef, shortcutWithUser)
-        .then(() => {
-          // No need to update the state here; the onValue listener will handle it
-        })
-        .catch((error) => {
-          console.error("Error saving shortcut:", error);
-        });
-    } else {
-      console.error("User not logged in"); // Handle the case when the user is not logged in
-    }
+      set(gameRef, gameData).then(() => {
+        navigate(`/game/${gameId}`);
+      });
+    });
   };
 
-  const handleDeleteShortcut = (shortcutToDelete) => {
-    // Mark the shortcut as deleted in the database
-    if (user) {
-      const databaseRef = ref(
-        database,
-        `users/${user.uid}/shortcuts/${shortcutToDelete.key}`
-      );
-      set(databaseRef, { deleted: true }, { merge: true })
-        .then(() => {
-          // Shortcut marked as deleted successfully
-        })
-        .catch((error) => {
-          console.error("Error marking shortcut as deleted:", error);
-        });
-    }
+  const getGames = () => {
+    const gamesRef = ref(database, `games`);
+    onValue(gamesRef, (snapshot) => {
+      const games = snapshot.val();
+      const activeGames = [];
+      const waitingGames = [];
+      for (const game in games) {
+        if (games[game].status === "waiting") {
+          waitingGames.push(games[game]);
+        } else if (games[game].status === "playing") {
+          activeGames.push(games[game]);
+        }
+      }
+      setActiveGames(activeGames);
+      setWaitingGames(waitingGames);
+    });
   };
 
-  // Fetch existing shortcuts when the user logs in, but only run once
   useEffect(() => {
     if (user) {
-      const databaseRef = ref(database, `users/${user.uid}/shortcuts`);
-      const unsubscribe = onValue(databaseRef, (snapshot) => {
-        const shortcutsData = snapshot.val();
-        if (shortcutsData) {
-          // Filter out deleted shortcuts before setting the state
-          const shortcutsArray = Object.entries(shortcutsData).map(
-            ([key, value]) => ({ key, ...value })
-          );
-          const filteredShortcuts = shortcutsArray.filter(
-            (shortcut) => !shortcut.deleted
-          );
-          setShortcuts(filteredShortcuts);
-        } else {
-          setShortcuts([]); // If no shortcuts found, set shortcuts to an empty array
-        }
-      });
-
-      return () => unsubscribe(); // Cleanup the listener when the component unmounts
+      getGames();
     }
   }, [user]);
 
   return (
-    <>
-      <div>
-        {isLoggedIn ? (
-          <div>
-            <ShortcutForm user={user} onShortcutSubmit={handleShortcutSubmit} />
-            <ShortcutList
-              user={user}
-              shortcuts={shortcuts}
-              onDeleteShortcut={handleDeleteShortcut}
-            />
+    <div>
+      {isLoggedIn ? (
+        <div>
+          <div className="flex justify-center">
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              onClick={() => createGame()}
+            >
+              Create Game
+            </button>
           </div>
-        ) : (
-          <div>
-            <PopularShortcutsGrid popularShortcuts={popularShortcutsData} />
-          </div>
-
-        )}
-      </div>
-    </>
+          <ActiveGames activeGames={activeGames} />
+          <WaitingGames waitingGames={waitingGames} joinGame={joinGame} />
+        </div>
+      ) : (
+        <div>
+          <LandingPage />
+        </div>
+      )}
+    </div>
   );
 };
 

@@ -31,7 +31,7 @@ const Signup = () => {
     <main className="flex items-center justify-center h-screen">
       <section>
         <div className="bg-white p-6 shadow-md rounded-md">
-          <h1 className="text-2xl font-semibold mb-4">Shortcut Tracker</h1>
+          <h1 className="text-2xl font-semibold mb-4">Nim</h1>
 
           <form onSubmit={onSubmit}>
             <div className="mb-4">

@@ -1,12 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import Home from './components/HomePage';
-import Signup from './components/Signup';
-import Login from './components/Login';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Header from './components/Header';
-import { signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'firebase/auth';
-import { auth, database } from './firebase';
-import { get, ref, onValue } from 'firebase/database';
+import React, { useState, useEffect } from "react";
+import Home from "./components/HomePage";
+import Signup from "./components/Signup";
+import Login from "./components/Login";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Header from "./components/Header";
+import {
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut,
+} from "firebase/auth";
+import { auth } from "./firebase";
+import NimGame from "./components/NimGame";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -73,11 +77,11 @@ function App() {
               path="/login"
               element={<Login handleUserLogin={handleLogin} />}
             />
-            {/* Add a route for the "/home" path */}
             <Route
               path="/home"
               element={<Home isLoggedIn={isLoggedIn} user={user} />}
             />
+            <Route path="/game/:gameId" element={<NimGame user={user} />} />
           </Routes>
         </section>
       </div>

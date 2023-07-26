@@ -36,7 +36,7 @@ const Login = ({ handleUserLogin }) => {
     <main className="flex items-center justify-center h-screen">
       <section>
         <div className="bg-white p-6 shadow-md rounded-md">
-          <h2 className="text-2xl font-semibold mb-4">Shortcut Tracker</h2>
+          <h2 className="text-2xl font-semibold mb-4">Nim</h2>
 
           <form onSubmit={onLogin}>
             <div className="mb-4">
