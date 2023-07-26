@@ -13,7 +13,7 @@ const NimBoard = ({
 }) => {
   return (
     <div>
-      <GameHeader player1={gameData.player_1_email} player2={gameData.player_2_email} />
+      <GameHeader player1={gameData.player_1_ID} player2={gameData.player_2_ID} />
       <div className="mt-4">
         <h3 className="font-bold mb-2">Piles:</h3>
         {gameData.piles.map((pile, pileIndex) => (

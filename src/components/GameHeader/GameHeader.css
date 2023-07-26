@@ -1,24 +1,54 @@
 /* GameHeader.css */
+
 .game-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #f5f5f5;
-    padding: 10px;
-    border-radius: 5px;
-  }
-  
-  .player-info {
-    display: flex;
-    align-items: center;
-  }
-  
-  .player-label {
-    font-weight: bold;
-    margin-right: 5px;
-  }
-  
-  .player-name {
-    font-size: 18px;
-  }
-  
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+}
+
+.player-info {
+  display: flex;
+  align-items: center;
+}
+
+.player-label {
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: #e2e8f0;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+}
+
+/* Add more spacing between Player 1 and Player 2 */
+.player-info + .player-info {
+  margin-left: 1.5rem;
+}
+
+/* Styling for Player 2 */
+.player-info:last-child .avatar {
+  background-color: #fca5a5; /* Custom background color for Player 2 */
+}
+
+.player-info:last-child .player-name {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #fca5a5; /* Custom text color for Player 2 */
+}
+
+.waiting-text {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #999;
+}

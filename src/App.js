@@ -11,6 +11,7 @@ import {
 } from "firebase/auth";
 import { auth } from "./firebase";
 import NimGame from "./components/NimGame";
+import UserProfile from "./components/Profile/UserProfile";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -72,6 +73,8 @@ function App() {
               path="/"
               element={<Home isLoggedIn={isLoggedIn} user={user} />}
             />
+            <Route exact path="/profile" element={<UserProfile user={user}/>} />
+
             <Route path="/signup" element={<Signup />} />
             <Route
               path="/login"
