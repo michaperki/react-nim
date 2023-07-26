@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/KeyboardShortcutTracker/static/css/main.e2f0587d.css",
-    "main.js": "/KeyboardShortcutTracker/static/js/main.3a577a6f.js",
-    "index.html": "/KeyboardShortcutTracker/index.html",
-    "main.e2f0587d.css.map": "/KeyboardShortcutTracker/static/css/main.e2f0587d.css.map",
-    "main.3a577a6f.js.map": "/KeyboardShortcutTracker/static/js/main.3a577a6f.js.map"
+    "main.css": "/react-nim/static/css/main.3194eaeb.css",
+    "main.js": "/react-nim/static/js/main.b5bae7f3.js",
+    "index.html": "/react-nim/index.html",
+    "main.3194eaeb.css.map": "/react-nim/static/css/main.3194eaeb.css.map",
+    "main.b5bae7f3.js.map": "/react-nim/static/js/main.b5bae7f3.js.map"
   },
   "entrypoints": [
-    "static/css/main.e2f0587d.css",
-    "static/js/main.3a577a6f.js"
+    "static/css/main.3194eaeb.css",
+    "static/js/main.b5bae7f3.js"
   ]
 }
